@@ -3,25 +3,19 @@ package io.oss.file.upload;
 import io.oss.util.exception.UploadException;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class UploadProgress {
 
-    public Long alreadyUpload = 0L;
+    private Long alreadyUpload = 0L;
 
-    public final Long fileSize;
+    private final Long fileSize;
 
-    public Long timeToCalculate = System.currentTimeMillis();
+    private Long startTime = System.currentTimeMillis();
 
-    public Long hasSend = 0L;
+    private Long completeTime = 0L;
 
-    public Long startTime = System.currentTimeMillis();
 
-    public Long completeTime = 0L;
-
-    public Long lastSpeed = 0L;
-
-    public Boolean isComplete = false;
+    private Boolean isComplete = false;
 
     public UploadProgress(Long fileSize) {
         this.fileSize = fileSize;
@@ -39,24 +33,13 @@ public class UploadProgress {
         return completeTime - startTime;
     }
 
-    public synchronized void uploadedRecord(Integer alreadyUpload) {
-        this.alreadyUpload = this.alreadyUpload + alreadyUpload;
-        this.hasSend = this.hasSend + alreadyUpload;
+    public synchronized void uploadedRecord(Long alreadyUpload) {
+        this.alreadyUpload = alreadyUpload;
     }
 
     public synchronized String getProgress() {
         BigDecimal progress = new BigDecimal((double) alreadyUpload / fileSize);
-        return progress.setScale(2, RoundingMode.UP).toString();
-    }
-
-    public synchronized Long getSpeed() {
-        if ((System.currentTimeMillis() - timeToCalculate) >= 1000) {
-            long speed = hasSend / ((System.currentTimeMillis() - timeToCalculate) / 1000);
-            hasSend = 0L;
-            timeToCalculate = System.currentTimeMillis();
-            return speed;
-        }
-        return lastSpeed;
+        return progress.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
     }
 
 }

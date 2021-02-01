@@ -2,6 +2,7 @@ package io.oss.file.service;
 
 import io.netty.channel.ChannelFuture;
 import io.oss.file.upload.UploadProgress;
+import io.oss.file.upload.UploadResultFuture;
 import io.oss.framework.remoting.FileClient;
 import io.oss.framework.remoting.listener.SocketChannelTableInfo;
 import io.oss.framework.remoting.protocol.FileCommand;
@@ -18,7 +19,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
 
 public class FileUploadHelper {
     private Logger logger = LoggerFactory.getLogger(FileUploadHelper.class);
@@ -27,14 +28,14 @@ public class FileUploadHelper {
 
     private final File file;
 
-    private Long position;
+    private volatile Long position;
 
     /**
      * 每个分配大小 bytes
      */
     private final Integer sliceSize;
 
-    private ByteBuffer fileSliceBuffer;
+    private volatile ByteBuffer fileSliceBuffer;
 
     private final RandomAccessFile randomAccessFile;
 
@@ -42,13 +43,18 @@ public class FileUploadHelper {
 
     private UploadProgress uploadProgress;
 
+    private UploadResultFuture future;
 
-    public FileUploadHelper(FileClient fileClient, String path, Integer sliceSize, InetSocketAddress diskServerAddr) {
+    private final ExecutorService executor;
+
+    public FileUploadHelper(FileClient fileClient, String path, Integer sliceSize, InetSocketAddress diskServerAddr, ExecutorService executor) {
         this.fileClient = fileClient;
         this.file = new File(path);
         this.sliceSize = sliceSize;
         this.diskServerAddr = diskServerAddr;
         this.uploadProgress = new UploadProgress(file.length());
+        this.executor = executor;
+        future = new UploadResultFuture(uploadProgress);
         try {
             this.randomAccessFile = new RandomAccessFile(file, "rw");
         } catch (FileNotFoundException e) {
@@ -71,7 +77,7 @@ public class FileUploadHelper {
         fileSliceBuffer.flip();
     }
 
-    public void upload() throws InterruptedException, IOException {
+    private void upload() throws InterruptedException, IOException {
         //小于sliceSize的文件 重新分配buffer
         reallocateIfNecessary();
         readBuffer();
@@ -92,40 +98,50 @@ public class FileUploadHelper {
                 e.printStackTrace();
             }
         }
-
         fileSliceBuffer.clear();
+        uploadProgress.uploadedRecord(position);
+        this.future.onProcessing();
     }
 
 
-    public void startUpload() {
-        try {
+    public UploadResultFuture startUpload() {
+        executor.execute(() -> {
+                    try {
+                        //上传前的准备，获取文件offset
+                        requestUpload();
+                        //发现服务器上已传输完毕
+                        if (continueUploadCheck()) {
+                            onFinish();
+                            return;
+                        }
+                        //顺序分片传输文件
+                        Long sliceNum = calculateSlice();
+                        for (int i = 0; i < sliceNum; i++) {
+                            upload();
+                        }
+                        onFinish();
+                    } catch (UploadResetException resetException) {
+                        //异常开始重传
+                        startUpload();
 
-            //上传前的准备，获取文件offset
-            requestUpload();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        return this.future;
+    }
 
-            //发现服务器上已传输完毕
-            if (continueUploadCheck()) {
-                uploadProgress.finish();
-                return;
-            }
-
-            //顺序分片传输文件
-            for (int i = 0; i < calculateSlice(); i++) {
-                upload();
-                uploadProgress.uploadedRecord(sliceSize);
-            }
-
-        } catch (UploadResetException resetException) {
-            //异常开始重传
-            startUpload();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * 完成上传文件任务，记录完成进度
+     */
+    private void onFinish() {
+        this.uploadProgress.finish();
+        future.onFinish();
     }
 
 
-    public void closeFD() throws IOException {
+    private void closeFD() throws IOException {
         randomAccessFile.close();
     }
 
@@ -152,7 +168,7 @@ public class FileUploadHelper {
         return sliceNum;
     }
 
-    public UploadProgress getUploadProgress(){
+    public UploadProgress getUploadProgress() {
         return this.uploadProgress;
     }
 

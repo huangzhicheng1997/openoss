@@ -7,7 +7,8 @@ import java.io.File;
  * @date 2021-01-22 14:42
  */
 public class ServerConfiguration {
-    private String fileStorePath = /*System.getProperty("user.home") + File.separator + "tempDir";*/"/Users/huangzhicheng/Desktop/tes";
+    private String fileStorePath = System.getProperty("user.home") + File.separator + "tempDir";
+
     private Integer port = 9200;
 
     public Integer getPort() {

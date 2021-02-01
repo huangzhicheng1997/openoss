@@ -139,4 +139,8 @@ public class FileClient {
         return responseFuture.get();
     }
 
+    public ClientConfiguration getClientConfiguration(){
+        return clientConfiguration;
+    }
+
 }

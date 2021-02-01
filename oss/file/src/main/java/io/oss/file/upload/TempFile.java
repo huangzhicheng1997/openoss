@@ -90,18 +90,22 @@ public class TempFile {
         if (isOver) {
             randomFile.close();
             String tempFileName = this.file.getName();
-            String originPathNameWithSuffix = this.file.getParent() + File.separator + tempFileName.split("#")[0];
+            String originPathNameWithSuffix = this.file.getParent() + File.separator + FileUtil.getOriginNameForTempFile(tempFileName);
             File originFile = new File(originPathNameWithSuffix);
 
             //以存在文件则重命名为（1），（2）......
             if (originFile.exists()) {
                 File parentDir = new File(file.getParent());
 
-                String fileOrgNameWithoutSuffix = tempFileName.split("#")[0].split("\\.")[0];
+                String fileOrgNameWithoutSuffix = FileUtil.getFileNameWithoutSuffix(originFile.getName());
                 //查询同名,不包括文件序号而且后缀名相同 去除临时文件
-                String[] fileList = parentDir.list((dir, fileName) -> fileName.startsWith(fileOrgNameWithoutSuffix)
-                        && FileUtil.getFileSuffix(fileName).equals(FileUtil.getFileSuffix(originFile.getName()))
-                        && !fileName.equals(tempFileName));
+
+                String[] fileList = parentDir.list((dir, fileName) ->
+                        fileName.startsWith(fileOrgNameWithoutSuffix)
+                                && FileUtil.getFileSuffix(fileName).equals(FileUtil.getFileSuffix(originFile.getName()))
+                                && !fileName.equals(tempFileName)
+                );
+
                 //如果查不到直接重命名
                 if (null == fileList) {
                     Files.move(this.file.toPath(), FileSystems.getDefault().getPath(originPathNameWithSuffix));
@@ -139,9 +143,9 @@ public class TempFile {
             if (fileName.equals(originFileName)) {
                 continue;
             }
-            //截取文件最后的字符"(1)"中的数字
-            String number = fileName.substring(fileOrgNameWithoutSuffix.length() + 1, fileName.split("\\.")[0].length() - 1);
 
+            //截取文件最后的字符"(1)"中的数字
+            String number = FileUtil.getFileNumber(fileName);
             if (maxNumber < Integer.parseInt(number)) {
                 maxNumber = Integer.parseInt(number);
             }
