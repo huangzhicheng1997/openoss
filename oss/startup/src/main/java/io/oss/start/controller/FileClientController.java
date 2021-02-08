@@ -22,10 +22,14 @@ public class FileClientController {
         ClientConfiguration clientConfiguration = initClientConfiguration();
         FileClient fileClient = new FileClient(nettyConfiguration, channelConnectionManager, clientConfiguration);
         String path = "C:\\Users\\lszhichengh\\Desktop\\platform-server.war";
+
+
+
         FileUploadHelper fileUploadHelper = new FileUploadHelper(fileClient, path, 65535,
                 new InetSocketAddress(clientConfiguration.getServerHostName(), clientConfiguration.getServerPort()),
                 Executors.newCachedThreadPool());
         UploadResultFuture uploadResultFuture = fileUploadHelper.startUpload();
+
         uploadResultFuture.addListener(future -> {
             UploadProgress uploadProgress = future.getUploadProgress();
             System.out.println("上传进度:"+uploadProgress.getProgress());

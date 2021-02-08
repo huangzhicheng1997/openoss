@@ -1,23 +1,28 @@
-# Compiled class file
-*.class
+# for Mac OS X System Files
+.DS_Store
+Thumbs.db
 
-# Log file
+# for emacs
+*~
+[#]*[#]
+
+# for Eclipse
+*.project
+
+# for Logs and databases
 *.log
 
-# BlueJ files
-*.ctxt
+# remove SVN
+.svn
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# for Xcode
+.*.swp
+.clang_complete
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# for IDEA
+*/build/*
+.idea/*
+*.iml
+/out/*
