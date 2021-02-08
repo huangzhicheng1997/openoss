@@ -1,6 +1,5 @@
 package io.oss.framework.remoting;
 
-import com.sun.javafx.PlatformUtil;
 import io.oss.framework.config.NettyConfiguration;
 import io.oss.framework.config.ServerConfiguration;
 import io.oss.framework.remoting.handler.ChannelConnectionManager;
@@ -18,6 +17,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.oss.util.util.PlatformUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
@@ -27,7 +29,7 @@ import java.net.InetSocketAddress;
  */
 public class FileServer {
 
-   /* private Logger logger = LoggerFactory.getLogger(FileServer.class);*/
+    private Logger logger = LoggerFactory.getLogger(FileServer.class);
     private ServerBootstrap serverBootstrap;
     private EventLoopGroup acceptor;
     private EventLoopGroup ioWorker;
@@ -84,7 +86,7 @@ public class FileServer {
     public void start() {
         serverBootstrap.bind().addListener(future -> {
             if (future.isSuccess()) {
-                /*logger.info("server start");*/
+               /* logger.info("server start");*/
                 System.out.println("server start");
             }
         });

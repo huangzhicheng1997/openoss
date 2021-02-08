@@ -1,11 +1,5 @@
 package io.oss.util.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-
 /**
  * @author zhicheng
  * @date 2021-01-22 14:45

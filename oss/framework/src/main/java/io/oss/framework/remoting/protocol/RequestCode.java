@@ -21,4 +21,10 @@ public class RequestCode {
      * 复位重传
      */
     public static final byte UPLOAD_RESET=5;
+
+    /**
+     * 拒绝上传（不支持相同文件名文件同时上传，减少同步带来的性能损耗）
+     */
+    public static final byte REJECT_UPLOAD_FILE_ALREADY_EXISTED=6;
+
 }

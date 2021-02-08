@@ -7,27 +7,25 @@ import io.oss.framework.config.NettyConfiguration;
 import io.oss.file.service.FileUploadHelper;
 import io.oss.framework.remoting.FileClient;
 import io.oss.framework.remoting.handler.ChannelConnectionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 public class FileClientController {
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        ChannelConnectionManager channelConnectionManager = initChannelConnectManager();
+    public static void main(String[] args){
+
         NettyConfiguration nettyConfiguration = initConfiguration();
         ClientConfiguration clientConfiguration = initClientConfiguration();
-        FileClient fileClient = new FileClient(nettyConfiguration, channelConnectionManager, clientConfiguration);
+
+
+        FileClient fileClient = new FileClient(nettyConfiguration, clientConfiguration);
         String path = "C:\\Users\\lszhichengh\\Desktop\\platform-server.war";
-
-
 
         FileUploadHelper fileUploadHelper = new FileUploadHelper(fileClient, path, 65535,
                 new InetSocketAddress(clientConfiguration.getServerHostName(), clientConfiguration.getServerPort()),
                 Executors.newCachedThreadPool());
+
         UploadResultFuture uploadResultFuture = fileUploadHelper.startUpload();
 
         uploadResultFuture.addListener(future -> {

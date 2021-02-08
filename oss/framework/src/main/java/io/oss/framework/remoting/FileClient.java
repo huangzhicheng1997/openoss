@@ -1,15 +1,6 @@
 package io.oss.framework.remoting;
 
 import com.sun.javafx.PlatformUtil;
-import io.oss.framework.config.ClientConfiguration;
-import io.oss.framework.config.NettyConfiguration;
-import io.oss.framework.remoting.handler.ChannelConnectionManager;
-import io.oss.framework.remoting.listener.SocketChannelTableInfo;
-import io.oss.framework.remoting.protocol.RequestCode;
-import io.oss.framework.remoting.protocol.ResponseFuture;
-import io.oss.framework.remoting.codec.FileEncoder;
-import io.oss.framework.remoting.protocol.FileCommand;
-import io.oss.framework.remoting.codec.FileDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -18,6 +9,16 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.oss.framework.config.ClientConfiguration;
+import io.oss.framework.config.NettyConfiguration;
+import io.oss.framework.remoting.codec.FileDecoder;
+import io.oss.framework.remoting.codec.FileEncoder;
+import io.oss.framework.remoting.listener.SocketChannelTableInfo;
+import io.oss.framework.remoting.protocol.ExceptionCode;
+import io.oss.framework.remoting.protocol.FileCommand;
+import io.oss.framework.remoting.protocol.RequestCode;
+import io.oss.framework.remoting.protocol.ResponseFuture;
+import io.oss.util.exception.UploadClientException;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -37,18 +38,15 @@ public class FileClient {
     private DefaultEventExecutorGroup handlerWorker;
     private NettyConfiguration nettyConfiguration;
     private Class channelClass;
-    private ChannelConnectionManager channelConnectionManager;
     private ClientConfiguration clientConfiguration;
     private Lock lock = new ReentrantLock();
 
 
     public FileClient(NettyConfiguration nettyConfiguration,
-                      ChannelConnectionManager channelConnectionManager,
                       ClientConfiguration clientConfiguration) {
         bootstrap = new Bootstrap();
         this.nettyConfiguration = nettyConfiguration;
         this.clientConfiguration = clientConfiguration;
-        this.channelConnectionManager = channelConnectionManager;
         handlerWorker = new DefaultEventExecutorGroup(nettyConfiguration.getHandlerWorks());
         if (PlatformUtil.isLinux()) {
             ioWorker = new EpollEventLoopGroup(nettyConfiguration.getIoWorkers());
@@ -74,11 +72,14 @@ public class FileClient {
                                 .addLast(handlerWorker, new SimpleChannelInboundHandler<FileCommand>() {
                                     @Override
                                     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FileCommand fileCommand) throws Exception {
-                                        //上传报错，复位重传
-                                        if (fileCommand.getProtocolType() == RequestCode.UPLOAD_RESET) {
-                                            ResponseFuture.onRest(fileCommand.getRequestSeq());
-                                        } else {
-                                            ResponseFuture.onComplete(fileCommand.getRequestSeq(), fileCommand);
+                                        switch (fileCommand.getProtocolType()) {
+                                            case RequestCode.UPLOAD_RESET:
+                                                ResponseFuture.onException(fileCommand.getRequestSeq(), ExceptionCode.RESET);
+                                                break;
+                                            case RequestCode.REJECT_UPLOAD_FILE_ALREADY_EXISTED:
+                                                ResponseFuture.onException(fileCommand.getRequestSeq(), ExceptionCode.reject);
+                                            default:
+                                                ResponseFuture.onComplete(fileCommand.getRequestSeq(), fileCommand);
                                         }
                                     }
                                 });
@@ -127,7 +128,7 @@ public class FileClient {
                 }
             }
         }
-        return null;
+        throw new UploadClientException("connect error");
     }
 
     public FileCommand sendCommandSync(FileCommand request) throws InterruptedException {
@@ -139,7 +140,7 @@ public class FileClient {
         return responseFuture.get();
     }
 
-    public ClientConfiguration getClientConfiguration(){
+    public ClientConfiguration getClientConfiguration() {
         return clientConfiguration;
     }
 

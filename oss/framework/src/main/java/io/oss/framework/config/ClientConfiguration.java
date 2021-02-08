@@ -1,7 +1,7 @@
 package io.oss.framework.config;
 
 public class ClientConfiguration {
-    private String serverHostName="localhost";
+    private String serverHostName="192.168.152.128";
     private Integer serverPort=9200;
     private Integer uploadThreadPoolSize=3;
 
