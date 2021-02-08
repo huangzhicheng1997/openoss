@@ -1,0 +1,5 @@
+io\oss\util\exception\UploadResetException.class
+io\oss\util\util\PlatformUtil.class
+io\oss\util\exception\UploadException.class
+io\oss\util\exception\UploadClientException.class
+io\oss\util\util\FileUtil.class

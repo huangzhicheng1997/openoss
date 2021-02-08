@@ -103,6 +103,19 @@ public class FileCommandFactory {
             return fileCommand;
         }
 
+        /**
+         * 拒绝上传报文
+         *
+         * @param requestSeq
+         * @return
+         */
+        public static FileCommand rejectResponse(int requestSeq) {
+            FileCommand fileCommand = new FileCommand();
+            fileCommand.setRequestSeq(requestSeq);
+            fileCommand.setProtocolType(RequestCode.REJECT_UPLOAD_FILE_ALREADY_EXISTED);
+            return fileCommand;
+        }
+
         public static FileCommand uploadFileResponse(int requestSeq, long eofPosition) {
 
             FileCommand fileCommand = new FileCommand();

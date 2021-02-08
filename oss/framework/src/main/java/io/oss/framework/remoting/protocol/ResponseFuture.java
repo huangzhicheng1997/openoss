@@ -1,5 +1,6 @@
 package io.oss.framework.remoting.protocol;
 
+import io.oss.util.exception.UploadRejectException;
 import io.oss.util.exception.UploadResetException;
 
 import java.util.Map;
@@ -17,7 +18,7 @@ public class ResponseFuture {
 
     private final Long startTime;
 
-    private volatile boolean reset;
+    private volatile int exceptionCode = -1;
 
     public ResponseFuture() {
         this.startTime = System.currentTimeMillis();
@@ -25,22 +26,24 @@ public class ResponseFuture {
 
     public FileCommand get() throws InterruptedException {
         countDownLatch.await(1000, TimeUnit.SECONDS);
-        if (reset) {
-            throw new UploadResetException();
+        switch (exceptionCode) {
+            case ExceptionCode.RESET:
+                throw new UploadResetException();
+            case ExceptionCode.reject:
+                throw new UploadRejectException("uploadReject because file is uploading!");
         }
         return fileCommandResp;
-    }
-
-    public static void onRest(Integer requestSeq) {
-        ResponseFuture responseFuture = responseFutureTable.get(requestSeq);
-        responseFuture.reset = true;
-        responseFuture.countDownLatch.countDown();
-
     }
 
     public static void onComplete(Integer requestSeq, FileCommand fileCommandResp) {
         ResponseFuture responseFuture = responseFutureTable.get(requestSeq);
         responseFuture.fileCommandResp = fileCommandResp;
+        responseFuture.countDownLatch.countDown();
+    }
+
+    public static void onException(Integer requestSeq, Integer code) {
+        ResponseFuture responseFuture = responseFutureTable.get(requestSeq);
+        responseFuture.exceptionCode = code;
         responseFuture.countDownLatch.countDown();
     }
 

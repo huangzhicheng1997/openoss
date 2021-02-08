@@ -1,13 +1,13 @@
 package io.oss.file.upload;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.oss.framework.config.ServerConfiguration;
-import io.oss.framework.remoting.protocol.*;
 import io.oss.framework.remoting.handler.ChannelReadHandler;
 import io.oss.framework.remoting.listener.AbstractChannelEventListener;
 import io.oss.framework.remoting.listener.event.ChannelActiveEvent;
 import io.oss.framework.remoting.listener.event.ChannelInactiveEvent;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.oss.framework.remoting.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,10 +61,32 @@ public class FileUploadProcessor extends AbstractChannelEventListener implements
     @Override
     public void channelRead(ChannelHandlerContext ctx, FileCommand msg) {
         if (msg.getProtocolType() == RequestCode.UPLOAD_REQUEST_START) {
+            prepareUploading(ctx.channel(), msg);
             handleUploadRequest(ctx, msg);
         } else {
             writeToTempFile(ctx.channel(), msg);
         }
+    }
+
+    /**
+     * 检查是否已经有同名文件正在上传中，有的话拒绝上传
+     * @param channel
+     * @param msg
+     */
+    private void prepareUploading(Channel channel, FileCommand msg) {
+        Map<String, TempFile> stringTempFileMap = fileTable.get(channel);
+        if (stringTempFileMap != null) {
+            TempFile file = stringTempFileMap.get(msg.getFileData().getFileName());
+            if (file != null) {
+                FileCommand fileCommand = FileCommandFactory.ResponseFactory.rejectResponse(msg.getRequestSeq());
+                channel.writeAndFlush(fileCommand).addListener(future -> {
+                    if (future.isSuccess()) {
+                        channel.closeFuture();
+                    }
+                });
+            }
+        }
+
     }
 
     private void writeToTempFile(Channel channel, FileCommand msg) {
@@ -82,7 +104,16 @@ public class FileUploadProcessor extends AbstractChannelEventListener implements
             }
             FileCommand fileCommand = FileCommandFactory.ResponseFactory.uploadFileResponse(msg.getRequestSeq(),
                     tempFile.getTempFileOffset());
-            channel.writeAndFlush(fileCommand);
+
+            //上传完成关闭tcp连接
+            final TempFile filePtr = tempFile;
+            channel.writeAndFlush(fileCommand).addListener(future -> {
+                if (future.isSuccess() && filePtr.isOver()) {
+                    channel.closeFuture();
+                }
+            });
+
+
         } catch (Exception e) {
             logger.error("写入异常，开始重试", e);
             //异常发送reset

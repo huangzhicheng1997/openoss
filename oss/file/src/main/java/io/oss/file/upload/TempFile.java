@@ -25,7 +25,7 @@ public class TempFile {
      */
     private long writeOffset = 0;
 
-    private final FileIdGenerator fileIdGenerator = new FileIdGenerator();
+    private static final FileIdGenerator fileIdGenerator = new FileIdGenerator();
 
     //完整文件大小
     private final long completeFileByteSize;
@@ -62,6 +62,10 @@ public class TempFile {
         this.completeFileByteSize = completeFileByteSize;
         this.randomFile = new RandomAccessFile(file, "rw");
 
+    }
+
+    public static File getTempedFile(String fileName, String storeDir){
+        return new File(storeDir + File.separator + fileName + "#temp" + fileIdGenerator.hash(fileName));
     }
 
 
