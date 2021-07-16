@@ -8,16 +8,23 @@ public class FileUtil {
     public static final String TEMP_FILE_FLAG = "#";
 
     public static String getFileSuffix(String fileName) {
+        if (fileName.lastIndexOf(".") == -1) {
+            return fileName;
+        }
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     public static String getFileNameWithoutSuffix(String fileName) {
+        if (fileName.lastIndexOf(".") == -1) {
+            return fileName;
+        }
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
     public static String getOriginNameForTempFile(String tempFileName) {
         return tempFileName.substring(0, tempFileName.lastIndexOf("#"));
     }
+
 
     public static String getFileNumber(String fileName) {
         String fileNameWithoutSuffix = getFileNameWithoutSuffix(fileName);

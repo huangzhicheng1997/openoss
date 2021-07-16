@@ -1,9 +1,0 @@
-io\oss\file\upload\FileUploadProcessor.class
-io\oss\file\upload\TempFile.class
-io\oss\file\upload\UserLoginHandler.class
-io\oss\file\service\FileUploadHelper.class
-io\oss\file\service\SimpleFileUploader.class
-io\oss\file\upload\UploadProgress.class
-io\oss\file\service\FileIdGenerator.class
-io\oss\file\upload\UploadResultFuture$GenericFutureListener.class
-io\oss\file\upload\UploadResultFuture.class
