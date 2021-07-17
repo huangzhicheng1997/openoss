@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.oss.kernel.support.processor.HandlerChainContext;
 import io.oss.kernel.support.processor.NettyProcessor;
-import io.oss.util.BodyMsgExtension;
-import io.oss.util.Command;
+import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.Command;
 
 /**
  * @Author zhicheng

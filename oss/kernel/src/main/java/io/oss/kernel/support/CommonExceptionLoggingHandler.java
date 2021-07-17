@@ -1,7 +1,7 @@
 package io.oss.kernel.support;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.oss.util.exception.ExceptionCode;
+import io.oss.protocol.exception.ExceptionCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -4,14 +4,14 @@ import io.netty.util.internal.StringUtil;
 import io.oss.kernel.environment.IsolatedEnvironment;
 import io.oss.kernel.environment.KernelEnvironment;
 import io.oss.kernel.environment.SystemEnvironment;
-import io.oss.util.CodecHelp;
+import io.oss.protocol.CodecHelp;
 import io.oss.kernel.spi.SpiLoader;
 import io.oss.kernel.spi.listener.ApplicationListener;
 import io.oss.kernel.spi.plugins.*;
 import io.oss.kernel.support.ApplicationEventMultiCaster;
 import io.oss.kernel.support.ApplicationLifeCycleManager;
 import io.oss.kernel.support.DefaultApplicationLifeCycleManager;
-import io.oss.util.CommandFactory;
+import io.oss.protocol.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

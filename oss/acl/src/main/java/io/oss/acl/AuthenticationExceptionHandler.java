@@ -1,9 +1,9 @@
 package io.oss.acl;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.oss.util.exception.AuthenticationException;
+import io.oss.protocol.exception.AuthenticationException;
 import io.oss.kernel.support.ChannelOuterExceptionHandler;
-import io.oss.util.exception.ExceptionCode;
+import io.oss.protocol.exception.ExceptionCode;
 
 /**
  * @author zhicheng

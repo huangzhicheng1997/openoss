@@ -3,20 +3,17 @@ package io.oss.server.handler;
 import io.netty.handler.codec.http.*;
 import io.oss.file.service.PullFileServiceWrapper;
 import io.oss.kernel.Inject;
-import io.oss.kernel.spi.plugins.Component;
-import io.oss.kernel.spi.plugins.FindDependenciesComponent;
 import io.oss.kernel.support.AutoDependenciesInjector;
 import io.oss.kernel.support.processor.HandlerChainContext;
 import io.oss.kernel.support.processor.NettyProcessor;
-import io.oss.util.Command;
-import io.oss.util.CommandBuilder;
-import io.oss.util.ContentTypes;
+import io.oss.protocol.Command;
+import io.oss.protocol.CommandBuilder;
+import io.oss.protocol.ContentTypes;
 import io.oss.util.exception.FileNotFindException;
 import io.oss.util.util.FileUtil;
 import io.oss.util.util.HttpUseCacheDecision;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.*;
 

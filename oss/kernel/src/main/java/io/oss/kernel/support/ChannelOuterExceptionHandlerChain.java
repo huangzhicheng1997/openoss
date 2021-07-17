@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
-import io.oss.util.ChannelHandlerInitializer;
+import io.oss.protocol.ChannelHandlerInitializer;
 import io.oss.kernel.environment.EnvironmentAware;
 import io.oss.kernel.environment.IsolatedEnvironment;
 import io.oss.kernel.environment.KernelEnvironment;

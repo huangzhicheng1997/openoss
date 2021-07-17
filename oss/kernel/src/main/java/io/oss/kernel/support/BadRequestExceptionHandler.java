@@ -2,7 +2,7 @@ package io.oss.kernel.support;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.oss.util.exception.BadRequestException;
-import io.oss.util.exception.ExceptionCode;
+import io.oss.protocol.exception.ExceptionCode;
 
 /**
  * @Author zhicheng

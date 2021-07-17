@@ -125,8 +125,6 @@ public class HashIndex {
         if (null != findNodeByFilePath(afterName)) {
             return 0;
         }
-
-        Slot slot = findSlot(filePath);
         String originFileName = node.mappingFile().getV();
         node.fileNameMapping = afterName + ":" + originFileName;
         node.writeToIndex();
@@ -165,7 +163,6 @@ public class HashIndex {
      */
     private Slot findSlot(String filePath) {
         assert filePath != null && filePath.length() > 0;
-        int hash = hash(filePath);
         return new Slot(filePath);
     }
 

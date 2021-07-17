@@ -1,12 +1,12 @@
 package io.oss.remoting.client;
 
 import io.netty.util.internal.StringUtil;
-import io.oss.util.BodyFactory;
-import io.oss.util.BodyMsgExtension;
-import io.oss.util.Command;
-import io.oss.util.CommandBuilder;
-import io.oss.util.protobuf.PBCommandFactory;
-import io.oss.util.protobuf.ProtobufCodecHelp;
+import io.oss.protocol.BodyFactory;
+import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.Command;
+import io.oss.protocol.CommandBuilder;
+import io.oss.protocol.protobuf.PBCommandFactory;
+import io.oss.protocol.protobuf.ProtobufCodecHelp;
 
 import java.io.File;
 import java.io.IOException;

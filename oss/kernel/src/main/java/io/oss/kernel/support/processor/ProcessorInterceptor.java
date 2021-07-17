@@ -1,7 +1,7 @@
 package io.oss.kernel.support.processor;
 
 import io.oss.kernel.spi.plugins.Component;
-import io.oss.util.Command;
+import io.oss.protocol.Command;
 
 /**
  * @author zhicheng

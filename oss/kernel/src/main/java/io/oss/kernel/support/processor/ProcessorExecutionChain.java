@@ -1,6 +1,6 @@
 package io.oss.kernel.support.processor;
 
-import io.oss.util.Command;
+import io.oss.protocol.Command;
 
 import java.util.List;
 

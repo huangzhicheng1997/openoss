@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>oss-server</artifactId>
-    <packaging>jar</packaging>
+
 
     <dependencies>
         <dependency>
@@ -26,11 +26,6 @@
         <dependency>
             <groupId>io.oss</groupId>
             <artifactId>acl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.oss</groupId>
-            <artifactId>config</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -3,7 +3,7 @@ package io.oss.remoting.client;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.oss.util.Command;
+import io.oss.protocol.Command;
 
 /**
  * @Author zhicheng

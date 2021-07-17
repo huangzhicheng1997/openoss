@@ -1,6 +1,6 @@
 package io.oss.remoting.client;
 
-import io.oss.util.Command;
+import io.oss.protocol.Command;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,7 +1,7 @@
 package io.oss.kernel.protocol;
 
 import io.oss.kernel.spi.plugins.WheelTask;
-import io.oss.util.http.HttpChannelRecord;
+import io.oss.protocol.http.HttpChannelRecord;
 
 /**
  * @Author zhicheng

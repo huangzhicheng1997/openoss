@@ -7,7 +7,7 @@ import io.oss.kernel.spi.event.NettyServerStartEvent;
 import io.oss.kernel.spi.listener.ApplicationListener;
 import io.oss.kernel.spi.plugins.Component;
 import io.oss.kernel.spi.plugins.FindDependenciesComponent;
-import io.oss.util.http.HttpCodecHelp;
+import io.oss.protocol.http.HttpCodecHelp;
 import io.oss.server.handler.DownloadHandler;
 import io.oss.server.handler.UploadHandler;
 

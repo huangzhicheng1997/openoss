@@ -1,7 +1,7 @@
 package io.oss.kernel.spi.plugins;
 
 import io.netty.util.concurrent.EventExecutorGroup;
-import io.oss.util.ChannelHandlerInitializer;
+import io.oss.protocol.ChannelHandlerInitializer;
 
 /**
  * @author zhicheng

@@ -1,13 +1,13 @@
 package io.oss.acl;
 
 import io.netty.util.internal.StringUtil;
-import io.oss.util.exception.AuthenticationException;
+import io.oss.protocol.exception.AuthenticationException;
 import io.oss.kernel.environment.EnvironmentAware;
 import io.oss.kernel.environment.IsolatedEnvironment;
 import io.oss.kernel.spi.plugins.WheelTask;
 import io.oss.kernel.support.processor.AbstractProcessorInterceptor;
 import io.oss.kernel.support.processor.HandlerChainContext;
-import io.oss.util.Command;
+import io.oss.protocol.Command;
 import io.oss.util.util.KVPair;
 import io.oss.util.util.RSAUtil;
 import org.slf4j.Logger;

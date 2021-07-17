@@ -3,8 +3,9 @@ package io.oss.kernel.support;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.oss.kernel.spi.plugins.Component;
-import io.oss.util.*;
-import io.oss.util.exception.ExceptionCode;
+import io.oss.protocol.CommandBuilder;
+import io.oss.protocol.RemotingCall;
+import io.oss.protocol.exception.ExceptionCode;
 
 /**
  * @author zhicheng

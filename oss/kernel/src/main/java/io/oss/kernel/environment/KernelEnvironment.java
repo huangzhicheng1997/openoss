@@ -16,6 +16,7 @@ public class KernelEnvironment extends NamedEnvironment {
     public static final String KernelEnvironmentName = "kernel";
 
     public KernelEnvironment() {
+        //定义namespace
         super(KernelEnvironmentName);
     }
 }

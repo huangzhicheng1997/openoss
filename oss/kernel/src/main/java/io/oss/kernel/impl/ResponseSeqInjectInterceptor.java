@@ -2,9 +2,9 @@ package io.oss.kernel.impl;
 
 import io.oss.kernel.support.processor.AbstractProcessorInterceptor;
 import io.oss.kernel.support.processor.HandlerChainContext;
-import io.oss.util.Command;
-import io.oss.util.CommandBuilder;
-import io.oss.util.http.HttpChannelRecord;
+import io.oss.protocol.Command;
+import io.oss.protocol.CommandBuilder;
+import io.oss.protocol.http.HttpChannelRecord;
 
 import java.util.Set;
 
