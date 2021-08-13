@@ -2,7 +2,7 @@ package io.oss.remoting.client;
 
 import io.netty.util.internal.StringUtil;
 import io.oss.protocol.BodyFactory;
-import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.BodyDta;
 import io.oss.protocol.Command;
 import io.oss.protocol.CommandBuilder;
 import io.oss.protocol.protobuf.PBCommandFactory;
@@ -103,7 +103,7 @@ public class OssPullHelp {
                 .commonRequest(URL_FILE_LENGTH, accessToken,
                         BodyFactory.getInstance().getFileLength(remotingFilePath));
         Command result = remotingClient.request(command, socketAddress).getSync();
-        BodyMsgExtension msgExtension = resultHandle(result);
+        BodyDta msgExtension = resultHandle(result);
         if (msgExtension == null) {
             throw new RemotingClientException("unknown error");
         }
@@ -134,8 +134,8 @@ public class OssPullHelp {
     }
 
 
-    private BodyMsgExtension resultHandle(Command result) {
-        BodyMsgExtension msgExtension = BodyMsgExtension.fromJson(result.getBody().resp());
+    private BodyDta resultHandle(Command result) {
+        BodyDta msgExtension = BodyDta.fromJson(result.getBody().resp());
 
         if (null != msgExtension && null != msgExtension.getErrorMsg()) {
             throw new RemotingClientException(msgExtension.getErrorMsg());

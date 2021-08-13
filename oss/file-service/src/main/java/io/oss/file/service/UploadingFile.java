@@ -33,9 +33,6 @@ public class UploadingFile {
     private FileDescriptor fileDescriptor;
 
     private boolean isClosed;
-
-    private RandomAccessFile describeFile;
-
     /**
      * 加载临时文件
      *
@@ -56,12 +53,6 @@ public class UploadingFile {
             file = new File(directoryName + File.separator + fileName);
             file.createNewFile();
 
-        }
-        //创建描述文件
-        if (describeFile == null) {
-            File describeFile = new File(directoryName + File.separator + FileUtil.getFileNameWithoutSuffix(fileName) + ".describe");
-            describeFile.createNewFile();
-            this.describeFile = new RandomAccessFile(describeFile, "rw");
         }
 
         this.accessFile = new RandomAccessFile(file, "rw");

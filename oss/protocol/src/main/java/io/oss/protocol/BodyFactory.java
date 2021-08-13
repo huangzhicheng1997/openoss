@@ -7,25 +7,25 @@ package io.oss.protocol;
  */
 public class BodyFactory {
 
-    private final ThreadLocal<BodyMsgExtension> msgExtension;
+    private final ThreadLocal<BodyDta> msgExtension;
 
     {
-        msgExtension = ThreadLocal.withInitial(BodyMsgExtension::new);
+        msgExtension = ThreadLocal.withInitial(BodyDta::new);
     }
 
     public static BodyFactory getInstance() {
         return Instance.BODY_FACTORY;
     }
 
-    public BodyMsgExtension getFileLength(String filePath) {
+    public BodyDta getFileLength(String filePath) {
         msgExtension.get().setFilePath(filePath);
-        BodyMsgExtension result = msgExtension.get();
+        BodyDta result = msgExtension.get();
         msgExtension.remove();
         return result;
     }
 
-    public BodyMsgExtension pullPartOfFile(String filePath, long position, int length) {
-        BodyMsgExtension msgExtension = this.msgExtension.get();
+    public BodyDta pullPartOfFile(String filePath, long position, int length) {
+        BodyDta msgExtension = this.msgExtension.get();
         msgExtension.setFilePath(filePath);
         msgExtension.setPullPosition(position);
         msgExtension.setPullLength(length);
@@ -36,15 +36,15 @@ public class BodyFactory {
     /**
      * 上传获取初始偏移
      */
-    public BodyMsgExtension getUploadedOffset(String filePath) {
-        BodyMsgExtension msgExtension = this.msgExtension.get();
+    public BodyDta getUploadedOffset(String filePath) {
+        BodyDta msgExtension = this.msgExtension.get();
         msgExtension.setFilePath(filePath);
         this.msgExtension.remove();
         return msgExtension;
     }
 
-    public BodyMsgExtension upload(String filePath, Long position) {
-        BodyMsgExtension msgExtension = this.msgExtension.get();
+    public BodyDta upload(String filePath, Long position) {
+        BodyDta msgExtension = this.msgExtension.get();
         msgExtension.setFilePath(filePath);
         msgExtension.setUploadPosition(position);
         this.msgExtension.remove();

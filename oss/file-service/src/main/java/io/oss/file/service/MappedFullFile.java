@@ -33,7 +33,7 @@ public class MappedFullFile {
     //1G
     private static final int partitionSize = 1024 * 1024 * 1024;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //一个页面大小 一般为4KB
     private static final Integer PAGE_SIZE;

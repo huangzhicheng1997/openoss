@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 时间轮算法进行定时资源清理
+ * 时间轮算法进行单线程定时资源清理
  *
  * @author zhicheng
  * @date 2021-05-07 16:52

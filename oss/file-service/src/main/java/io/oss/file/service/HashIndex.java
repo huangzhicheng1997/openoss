@@ -1,13 +1,14 @@
 package io.oss.file.service;
 
+import io.oss.util.util.FileUtil;
 import io.oss.util.util.KVPair;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author zhicheng
@@ -18,7 +19,7 @@ public class HashIndex {
     /**
      * 索引的最⼤槽位 10M
      */
-    private static final int MAXIMUM_CAPACITY = 10 * (1 << 20);
+    public static final int MAXIMUM_CAPACITY = 10 * (1 << 20);
 
     private static final int MAXIMUM_MAPPING_LENGTH = 256;
     /**
@@ -94,6 +95,28 @@ public class HashIndex {
         }
     }
 
+    public synchronized FileMetaData searchFile(String filePath) {
+        Slot slot = findSlot(filePath);
+        String fileName = FileUtil.getFileNameByPath(filePath);
+        Node node = slot.findNodeByFileName(fileName);
+        if (null == node) {
+            return null;
+        }
+        FileMetaData fileMetaData = new FileMetaData();
+        fileMetaData.setCreateTime(node.createTime);
+        fileMetaData.setFileLength(node.fileLength);
+        fileMetaData.setFullFileLength(node.fullFileLength);
+        fileMetaData.setFileName(fileName);
+        fileMetaData.setIsDeleted(node.isDeleted);
+        fileMetaData.setIsDir(node.isDir);
+        fileMetaData.setLastModifyTime(node.lastModifyTime);
+        return fileMetaData;
+    }
+
+    public synchronized Boolean isExist(String filePath) {
+        return null != searchFile(filePath);
+    }
+
     /**
      * 删除文件
      *
@@ -104,7 +127,6 @@ public class HashIndex {
         if (null == node || 1 == node.isDeleted) {
             return;
         }
-        Slot slot = findSlot(filePath);
         new Node(node.fileLength, node.fullFileLength, node.lastModifyTime, node.createTime,
                 (byte) 1, node.offset, node.fileNameMapping, node.nextNodeOffset, node.isDir)
                 .writeToIndex();

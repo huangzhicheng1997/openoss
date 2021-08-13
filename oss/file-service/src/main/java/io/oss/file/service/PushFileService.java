@@ -106,7 +106,11 @@ public class PushFileService {
         } else {
             uploadingFile = pair.getKey();
             //更新最近使用时间
-            pair.setV(System.currentTimeMillis());
+            boolean isOk;
+            do {
+                isOk = pair.compareAndSetV(System.currentTimeMillis(), pair.getV());
+            } while (!isOk);
+
         }
         uploadingFile.open(filePath);
 

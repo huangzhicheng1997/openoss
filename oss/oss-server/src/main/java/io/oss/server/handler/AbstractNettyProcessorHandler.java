@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.oss.kernel.support.processor.HandlerChainContext;
 import io.oss.kernel.support.processor.NettyProcessor;
-import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.BodyDta;
 import io.oss.protocol.Command;
 
 /**
@@ -19,8 +19,8 @@ public abstract class AbstractNettyProcessorHandler implements NettyProcessor {
     public Command handle(Command request, HandlerChainContext context) {
         String msg = request.getBody().resp();
         Gson gson = new Gson();
-        BodyMsgExtension bodyMsgExtension = gson.fromJson(msg, BodyMsgExtension.class);
-        return handle(request, bodyMsgExtension, context);
+        BodyDta bodyDta = gson.fromJson(msg, BodyDta.class);
+        return handle(request, bodyDta, context);
     }
 
 
@@ -29,5 +29,5 @@ public abstract class AbstractNettyProcessorHandler implements NettyProcessor {
         return channelHandlerContext.channel();
     }
 
-    protected abstract Command handle(Command request, BodyMsgExtension bodyMsgExtension, HandlerChainContext context);
+    protected abstract Command handle(Command request, BodyDta bodyDta, HandlerChainContext context);
 }

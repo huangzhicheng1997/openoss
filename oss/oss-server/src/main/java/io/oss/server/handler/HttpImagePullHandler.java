@@ -55,7 +55,7 @@ public class HttpImagePullHandler implements AutoDependenciesInjector, NettyProc
         //检验cache
         if (HttpUseCacheDecision.isUseCache(etag, lastModifiedTime.toString(), (FullHttpRequest) request.unWrap())) {
             DefaultFullHttpResponse defaultFullHttpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED);
-            return CommandBuilder.fullHttpResponse(defaultFullHttpResponse);
+            return CommandBuilder.fullHttpResponseCommand(defaultFullHttpResponse);
         }
 
 
@@ -72,7 +72,7 @@ public class HttpImagePullHandler implements AutoDependenciesInjector, NettyProc
                 .set(HttpHeaderNames.ETAG, etag)
                 .set(HttpHeaderNames.SERVER, "Netty");
         defaultFullHttpResponse.content().writeBytes(buffer);
-        return CommandBuilder.fullHttpResponse(defaultFullHttpResponse);
+        return CommandBuilder.fullHttpResponseCommand(defaultFullHttpResponse);
     }
 
     private String countEtag(Date lastModifyTime, long fileLength) {

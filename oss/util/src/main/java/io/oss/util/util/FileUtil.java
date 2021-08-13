@@ -1,11 +1,23 @@
 package io.oss.util.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtil {
     public static final String POINT = ".";
     public static final String TEMP_FILE_FLAG = "#";
+
+    public static String getDirectory(String filePath) {
+        ValidateUtil.assertNotBlankEmptyAndNull(filePath);
+        File file = new File(filePath);
+        return file.getParent();
+    }
+
+    public static String getFileNameByPath(String filePath){
+        File file = new File(filePath);
+        return file.getName();
+    }
 
     public static String getFileSuffix(String fileName) {
         if (fileName.lastIndexOf(".") == -1) {

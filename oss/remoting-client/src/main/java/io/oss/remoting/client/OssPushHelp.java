@@ -1,7 +1,7 @@
 package io.oss.remoting.client;
 
 import io.oss.protocol.BodyFactory;
-import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.BodyDta;
 import io.oss.protocol.Command;
 import io.oss.protocol.CommandBuilder;
 import io.oss.protocol.protobuf.PBCommandFactory;
@@ -39,22 +39,22 @@ public class OssPushHelp {
     public Long getUploadedOffset(String filePath) throws InterruptedException {
         Command command = CommandBuilder.commonRequest(URL_UPLOADED_OFFSET, accessToken, BodyFactory.getInstance().getUploadedOffset(filePath));
         Command resp = remotingClient.request(command, socketAddress).getSync();
-        BodyMsgExtension msgExtension = resultHandle(resp);
+        BodyDta msgExtension = resultHandle(resp);
         return msgExtension.getUploadedLength();
     }
 
     public Long upload(String filePath, ByteBuffer buffer, Long position) throws InterruptedException {
         Command command = CommandBuilder.fullRequest(URL_UPLOAD, accessToken, BodyFactory.getInstance().upload(filePath, position), buffer);
         Command resp = remotingClient.request(command, socketAddress).getSync();
-        BodyMsgExtension msgExtension = resultHandle(resp);
+        BodyDta msgExtension = resultHandle(resp);
         return msgExtension.getUploadedLength();
     }
 
     public void finish(String filPath) {
     }
 
-    private BodyMsgExtension resultHandle(Command result) {
-        BodyMsgExtension msgExtension = BodyMsgExtension.fromJson(result.getBody().resp());
+    private BodyDta resultHandle(Command result) {
+        BodyDta msgExtension = BodyDta.fromJson(result.getBody().resp());
         if (null != msgExtension && null != msgExtension.getErrorMsg()) {
             throw new RemotingClientException(msgExtension.getErrorMsg());
         }

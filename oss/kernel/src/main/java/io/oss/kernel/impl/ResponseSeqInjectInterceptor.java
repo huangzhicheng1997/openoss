@@ -9,6 +9,8 @@ import io.oss.protocol.http.HttpChannelRecord;
 import java.util.Set;
 
 /**
+ * 非http请求，对响应注入对应请求的序号，以完成一次会话
+ *
  * @author zhicheng
  * @date 2021-05-07 17:17
  */

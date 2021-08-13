@@ -6,6 +6,12 @@ import io.oss.util.exception.FileNotFindException;
 import io.oss.util.exception.PullMsgTooLongException;
 
 /**
+ * 定义所有的异常，对应的协议编码。
+ * <p>
+ * 对于基于tcp的私有协议，客户端接受的错误响应元数据为 [code,msg,exception.getMessage]<br>
+ * 对于http协议，http客户端在此枚举下定义了java异常与http协议的异常对应关系
+ * </p>
+ *
  * @Author zhicheng
  * @Date 2021/5/25 3:15 下午
  * @Version 1.0

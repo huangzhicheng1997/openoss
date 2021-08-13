@@ -4,7 +4,7 @@ import io.oss.file.service.PullFileServiceWrapper;
 import io.oss.kernel.Inject;
 import io.oss.kernel.support.AutoDependenciesInjector;
 import io.oss.kernel.support.processor.HandlerChainContext;
-import io.oss.protocol.BodyMsgExtension;
+import io.oss.protocol.BodyDta;
 import io.oss.protocol.Command;
 import io.oss.protocol.CommandBuilder;
 import io.oss.protocol.ContentTypes;
@@ -35,22 +35,22 @@ public class DownloadHandler extends AbstractNettyProcessorHandler implements Au
     }
 
     @Override
-    protected Command handle(Command request, BodyMsgExtension bodyMsgExtension, HandlerChainContext context) {
+    protected Command handle(Command request, BodyDta bodyDta, HandlerChainContext context) {
         String uri = request.getHeader().uri();
         switch (uri) {
             case GET_FILE_LENGTH:
-                return processGetLength(request, bodyMsgExtension, context);
+                return processGetLength(request, bodyDta, context);
             case PULL_FILE:
-                return processPullFile(request, bodyMsgExtension, context);
+                return processPullFile(request, bodyDta, context);
         }
 
         return null;
     }
 
-    private Command processPullFile(Command request, BodyMsgExtension bodyMsgExtension, HandlerChainContext context) {
-        String filePath = bodyMsgExtension.getFilePath();
-        Integer pullLength = bodyMsgExtension.getPullLength();
-        Long pullPosition = bodyMsgExtension.getPullPosition();
+    private Command processPullFile(Command request, BodyDta bodyDta, HandlerChainContext context) {
+        String filePath = bodyDta.getFilePath();
+        Integer pullLength = bodyDta.getPullLength();
+        Long pullPosition = bodyDta.getPullPosition();
         if (null == filePath || null == pullLength || null == pullPosition) {
             throw new IllegalArgumentException("filePath,pullLength,pullPosition can not be null!");
         }
@@ -58,7 +58,7 @@ public class DownloadHandler extends AbstractNettyProcessorHandler implements Au
 
         ByteBuffer byteBuffer = pullFileService.pullPartOfFile(filePath, pullPosition, pullLength);
 
-        BodyMsgExtension msgExtension = BodyMsgExtension.Builder.newBuilder()
+        BodyDta msgExtension = BodyDta.Builder.newBuilder()
                 .setContentType(ContentTypes.APPLICATION_OCTET_STREAM)
                 .setPullLength(pullLength)
                 .setPullPosition(pullPosition)
@@ -66,21 +66,21 @@ public class DownloadHandler extends AbstractNettyProcessorHandler implements Au
                 .setLastModify(new Date(new File(filePath).lastModified()).toString())
                 .build();
 
-        return CommandBuilder.fullResponse(getChannel(context), msgExtension, byteBuffer);
+        return CommandBuilder.fullRespCommand(getChannel(context), msgExtension, byteBuffer);
     }
 
 
-    private Command processGetLength(Command request, BodyMsgExtension bodyMsgExtension, HandlerChainContext context) {
-        if (bodyMsgExtension.getFilePath() == null) {
+    private Command processGetLength(Command request, BodyDta bodyDta, HandlerChainContext context) {
+        if (bodyDta.getFilePath() == null) {
             throw new IllegalArgumentException("file path can not be null!");
         }
-        long fileLength = pullFileService.getFileLength(bodyMsgExtension.getFilePath());
+        long fileLength = pullFileService.getFileLength(bodyDta.getFilePath());
 
-        BodyMsgExtension msgExtension = BodyMsgExtension.Builder.newBuilder()
+        BodyDta msgExtension = BodyDta.Builder.newBuilder()
                 .setContentType(ContentTypes.APPLICATION_JSON)
                 .setFileLength(fileLength).build();
 
-        return CommandBuilder.commonResp(getChannel(context), msgExtension);
+        return CommandBuilder.commonRespCommand(getChannel(context), msgExtension);
     }
 
 }

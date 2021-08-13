@@ -3,13 +3,13 @@ package io.oss.protocol;
 import com.google.gson.Gson;
 
 /**
- * 协议中body部分 json序列化前的数据
+ * 私有协议中中{@link Body}的'resp'字段的对象化数据
  *
  * @Author zhicheng
  * @Date 2021/5/24 8:13 下午
  * @Version 1.0
  */
-public class BodyMsgExtension {
+public class BodyDta {
 
     private Long pullPosition;
 
@@ -25,13 +25,26 @@ public class BodyMsgExtension {
 
     private String errorCode;
 
-    private String filePath;
 
     private String lastModify;
 
     private String contentType;
 
-    public BodyMsgExtension() {
+    //------------- newBody-----------
+
+    private String filePath;
+
+    private Long fullFileLength;
+
+    //------------- upload----------
+    private Long nextPushOffset;
+
+    private Long currentLength;
+
+    private Integer finishUploadAck;
+
+
+    public BodyDta() {
     }
 
     public String getLastModify() {
@@ -114,9 +127,9 @@ public class BodyMsgExtension {
         this.contentType = contentType;
     }
 
-    public static BodyMsgExtension fromJson(String body) {
+    public static BodyDta fromJson(String body) {
         Gson gson = new Gson();
-        return gson.fromJson(body, BodyMsgExtension.class);
+        return gson.fromJson(body, BodyDta.class);
     }
 
     public String toJson() {
@@ -124,9 +137,40 @@ public class BodyMsgExtension {
         return gson.toJson(this);
     }
 
+    public Long getNextPushOffset() {
+        return nextPushOffset;
+    }
+
+    public void setNextPushOffset(Long nextPushOffset) {
+        this.nextPushOffset = nextPushOffset;
+    }
+
+    public Long getFullFileLength() {
+        return fullFileLength;
+    }
+
+    public void setFullFileLength(Long fullFileLength) {
+        this.fullFileLength = fullFileLength;
+    }
+
+    public Long getCurrentLength() {
+        return currentLength;
+    }
+
+    public void setCurrentLength(Long currentLength) {
+        this.currentLength = currentLength;
+    }
+
+    public Integer getFinishUploadAck() {
+        return finishUploadAck;
+    }
+
+    public void setFinishUploadAck(Integer finishUploadAck) {
+        this.finishUploadAck = finishUploadAck;
+    }
 
     public static class Builder {
-        private final BodyMsgExtension msgExtension = new BodyMsgExtension();
+        private final BodyDta msgExtension = new BodyDta();
 
         public static Builder newBuilder() {
             return new Builder();
@@ -188,7 +232,27 @@ public class BodyMsgExtension {
             return this;
         }
 
-        public BodyMsgExtension build() {
+        public Builder setNextPushOffset(Long nextPushOffset) {
+            msgExtension.nextPushOffset = nextPushOffset;
+            return this;
+        }
+
+        public Builder setFullFileLength(Long fullFileLength) {
+            msgExtension.fullFileLength = fullFileLength;
+            return this;
+        }
+
+        public Builder setCurrentLength(Long currentLength) {
+            msgExtension.currentLength = currentLength;
+            return this;
+        }
+
+        public Builder setFinishUploadAck(Integer finishUploadAck) {
+            msgExtension.finishUploadAck = finishUploadAck;
+            return this;
+        }
+
+        public BodyDta build() {
             return msgExtension;
         }
 
